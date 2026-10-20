@@ -60,6 +60,7 @@ import {
   fetchOrders,
   fetchCustomerOrders,
   updateOrderRow,
+  deleteOrderRow,
   updateAccount,
   sendPasswordReset,
   notifyOrderByEmail,
@@ -2180,7 +2181,7 @@ function AccountForm() {
   );
 }
 
-function OrderCard({ order, details, onChange }) {
+function OrderCard({ order, details, onChange, onDelete }) {
   const { lang: uiLang } = useLanguage();
   const [msgLang, setMsgLang] = useState(order.lang || "ar");
   const [override, setOverride] = useState(null);
@@ -2244,6 +2245,7 @@ function OrderCard({ order, details, onChange }) {
             <option>Preparing</option>
             <option>Shipped</option>
             <option>Delivered</option>
+            <option>Rejected</option>
             <option>Cancelled</option>
           </select>
         </label>
@@ -2352,6 +2354,24 @@ function OrderCard({ order, details, onChange }) {
         {!order.messagePreparedAt && order.messageSentAt && (
           <p className="upload-hint">{tr("Message sent", uiLang)} · {new Date(order.messageSentAt).toLocaleString()}</p>
         )}
+      </div>
+      <div className="admin-order-actions">
+        {order.status !== "Rejected" && order.status !== "Cancelled" && (
+          <button
+            type="button"
+            className="order-reject-button"
+            onClick={() => onChange({ status: "Rejected" })}
+          >
+            Reject order
+          </button>
+        )}
+        <button
+          type="button"
+          className="order-delete-button"
+          onClick={() => onDelete(order.id)}
+        >
+          Delete order
+        </button>
       </div>
     </article>
   );
@@ -2510,6 +2530,18 @@ function Manage({ products, setProducts, importLocalProducts, productsSyncError 
         console.error(e);
         setNotice("Could not save the order change.");
       });
+  };
+  const deleteOrder = async (id) => {
+    if (!window.confirm(`Delete order ${id} permanently? This cannot be undone.`))
+      return;
+    try {
+      if (remoteEnabled) await deleteOrderRow(id);
+      setOrders((old) => old.filter((order) => order.id !== id));
+      setNotice(`Order ${id} deleted.`);
+    } catch (e) {
+      console.error(e);
+      setNotice("Could not delete the order. Check your Supabase permissions.");
+    }
   };
   const resetCatForm = () => {
     setCatForm(blankCat);
@@ -3410,6 +3442,7 @@ function Manage({ products, setProducts, importLocalProducts, productsSyncError 
                   order={order}
                   details={paymentDetails}
                   onChange={(patch) => updateOrder(order.id, patch)}
+                  onDelete={deleteOrder}
                 />
               ))
             ) : (

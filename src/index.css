@@ -3759,6 +3759,27 @@ body {
   border: 1px solid #d6cbc7;
   background: white;
 }
+.admin-order-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+.admin-order-actions button {
+  min-height: 40px;
+  padding: 9px 14px;
+  border: 1px solid #7d283d;
+  background: #451521;
+  color: #fff;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.admin-order-actions .order-delete-button {
+  border-color: #9a3945;
+  background: #7d283d;
+}
 .admin-order-card ul {
   padding-inline-start: 20px;
 }

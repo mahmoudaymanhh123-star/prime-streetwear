@@ -153,3 +153,7 @@ export async function updateOrderRow(order) {
     .eq("id", order.id);
   if (error) throw error;
 }
+export async function deleteOrderRow(id) {
+  const { error } = await supabase.from("store_orders").delete().eq("id", id);
+  if (error) throw error;
+}
