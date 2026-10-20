@@ -2369,6 +2369,11 @@ function Manage({ products, setProducts, importLocalProducts, productsSyncError 
   const [recoveryConfirm, setRecoveryConfirm] = useState("");
   const [editing, setEditing] = useState(null);
   const [section, setSection] = useState("products");
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const navigateSection = (nextSection) => {
+    setSection(nextSection);
+    setMobileNavOpen(false);
+  };
   const [categories, setCategories] = useState(() =>
     readStored("prime_categories", [
       "T-Shirts",
@@ -2799,14 +2804,25 @@ function Manage({ products, setProducts, importLocalProducts, productsSyncError 
     );
   return (
     <main className="manage-page">
-      <aside className="manage-sidebar">
+      <aside
+        className={`manage-sidebar ${mobileNavOpen ? "manage-sidebar-open" : ""}`}
+      >
         <Brand light />
+        <button
+          className="manage-mobile-menu-toggle"
+          type="button"
+          aria-label={mobileNavOpen ? "Close admin menu" : "Open admin menu"}
+          aria-expanded={mobileNavOpen}
+          onClick={() => setMobileNavOpen((open) => !open)}
+        >
+          {mobileNavOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
         <span className="manage-sidebar-label">WORKSPACE</span>
         <button
           className={
             section === "products" ? "manage-nav-active" : "manage-nav-item"
           }
-          onClick={() => setSection("products")}
+          onClick={() => navigateSection("products")}
         >
           <SlidersHorizontal size={17} /> Product management
         </button>
@@ -2814,7 +2830,7 @@ function Manage({ products, setProducts, importLocalProducts, productsSyncError 
           className={
             section === "categories" ? "manage-nav-active" : "manage-nav-item"
           }
-          onClick={() => setSection("categories")}
+          onClick={() => navigateSection("categories")}
         >
           <FolderPlus size={17} /> Categories
         </button>
@@ -2826,7 +2842,7 @@ function Manage({ products, setProducts, importLocalProducts, productsSyncError 
             if (remoteEnabled)
               fetchOrders().then(setOrders).catch(console.error);
             else setOrders(readStored("prime_orders", []));
-            setSection("orders");
+            navigateSection("orders");
           }}
         >
           <ClipboardList size={17} /> Orders ({orders.length})
@@ -2836,7 +2852,7 @@ function Manage({ products, setProducts, importLocalProducts, productsSyncError 
             className={
               section === "account" ? "manage-nav-active" : "manage-nav-item"
             }
-            onClick={() => setSection("account")}
+            onClick={() => navigateSection("account")}
           >
             <SlidersHorizontal size={17} /> Account
           </button>
@@ -2848,14 +2864,14 @@ function Manage({ products, setProducts, importLocalProducts, productsSyncError 
                 ? "manage-nav-active"
                 : "manage-nav-item"
             }
-            onClick={() => setSection("notifications")}
+            onClick={() => navigateSection("notifications")}
           >
             <MessageCircle size={17} /> Email notifications
           </button>
         )}
         <button
           className={section === "help" ? "manage-nav-active" : "manage-nav-item"}
-          onClick={() => setSection("help")}
+          onClick={() => navigateSection("help")}
         >
           <MessageCircle size={17} /> Help &amp; policies
         </button>
@@ -2863,7 +2879,7 @@ function Manage({ products, setProducts, importLocalProducts, productsSyncError 
           className={
             section === "payments" ? "manage-nav-active" : "manage-nav-item"
           }
-          onClick={() => setSection("payments")}
+          onClick={() => navigateSection("payments")}
         >
           <PackageCheck size={17} /> Payment settings
         </button>
@@ -2873,6 +2889,7 @@ function Manage({ products, setProducts, importLocalProducts, productsSyncError 
             if (remoteEnabled) signOutAdmin();
             setAuthenticated(false);
             setPassword("");
+            setMobileNavOpen(false);
           }}
         >
           <ArrowLeft size={17} /> Lock workspace
