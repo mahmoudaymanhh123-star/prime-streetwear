@@ -3890,6 +3890,85 @@ body {
   text-align: right;
 }
 
+/* Keep editable controls readable throughout the dark admin workspace. */
+.manage-page input:not([type="file"]):not([type="checkbox"]):not([type="radio"]),
+.manage-page textarea,
+.manage-page select {
+  border-color: #55565c;
+  background-color: #303135;
+  color: #f4f1f2;
+  color-scheme: dark;
+}
+.manage-page input::placeholder,
+.manage-page textarea::placeholder {
+  color: #aaa5aa;
+  opacity: 1;
+}
+.manage-page select option {
+  background: #303135;
+  color: #f4f1f2;
+}
+.manage-page input:focus,
+.manage-page textarea:focus,
+.manage-page select:focus {
+  border-color: #b66b7e;
+  outline: 2px solid rgba(182, 107, 126, 0.28);
+  outline-offset: 1px;
+}
+
+/* Keep every admin section reachable on narrow screens. */
+@media (max-width: 680px) {
+  .manage-page .manage-sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    height: auto;
+    min-width: 0;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+  }
+
+  .manage-page .manage-sidebar > .brandmark {
+    flex: 0 0 auto;
+    margin: 0 10px 0 0;
+  }
+
+  .manage-page .manage-sidebar-label,
+  .manage-page .manage-sidebar-bottom {
+    display: none;
+  }
+
+  .manage-page .manage-sidebar .manage-nav-active,
+  .manage-page .manage-sidebar .manage-nav-item {
+    display: inline-flex;
+    flex: 0 0 auto;
+    width: auto;
+    margin: 0;
+    padding: 9px 10px;
+    font-size: 10px;
+    line-height: 1.3;
+    white-space: nowrap;
+  }
+
+  .manage-page .manage-sidebar .manage-nav-active {
+    background: #451521;
+    border: 0;
+    border-bottom: 2px solid #c18a95;
+  }
+
+  .manage-page .manage-sidebar .manage-nav-item {
+    background: transparent;
+    color: #c8b6ba;
+  }
+}
+
 /* --- shipping / payment / order message / category admin additions --- */
 .payment-line {
   display: flex;
